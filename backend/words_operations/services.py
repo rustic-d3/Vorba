@@ -6,6 +6,11 @@ import datetime
 
 from .models import WordClass
 
+game_stats = [
+    ("in_progress", "În progres"),
+    ("win", "Câștig")
+    
+]
 def check_word(word):
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) MyDjangoApp/1.0"
@@ -56,7 +61,6 @@ def get_color_code(word, word_of_the_day):
 
     return ''.join(result)
             
-
 def word_of_the_day():
     start_date = datetime.date(2026, 9, 1)     
     today = timezone.localdate()
