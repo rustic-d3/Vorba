@@ -1,3 +1,5 @@
+import dj_database_url
+
 from .base import *
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -10,9 +12,16 @@ DEBUG = True
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if "DATABASE_URL" in os.environ:
+    
+    DATABASES = {
+        'default': dj_database_url.config(
+        conn_max_age=500,
+        conn_health_checks=True,
+    )
     }
-}
+    
+#To change in production
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]

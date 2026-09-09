@@ -21,3 +21,7 @@ if "DATABASE_URL" in os.environ:
     )
     }
     
+#To change in production
+CORS_ALLOWED_ORIGINS = [
+    os.getenv("FRONTEND_ADDRESS_PROD"),
+]
