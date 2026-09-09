@@ -1,5 +1,12 @@
 from django.db import models
-from .services import game_stats
+
+
+game_stats = [
+    ("in_progress", "În progres"),
+    ("win", "Câștig")
+    
+]
+
 
 # Create your models here.
 class WordClass(models.Model):
