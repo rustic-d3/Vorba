@@ -1,0 +1,280 @@
+@import url("https://fonts.googleapis.com/css2?family=Sour+Gummy:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200");
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+    /**********************************************************************************************/
+    /* SPACING SYSTEM *****************************************************************************/
+    --spacing: 1px;
+
+    /**********************************************************************************************/
+    /* BREAKPOINTS SYSTEM *************************************************************************/
+
+    --breakpoint-sm: 414px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 1280px;
+    --breakpoint-xl: 1440px;
+
+    /*********************************************************************************************/
+    /* COLOR SYSTEM ******************************************************************************/
+
+    --color-space-indigo-100: #ffffff;
+    --color-space-indigo-98: #f9f9fb;
+    --color-space-indigo-96: #f3f3f7;
+    --color-space-indigo-94: #ededf3;
+    --color-space-indigo-92: #e7e8ee;
+    --color-space-indigo-90: #e1e2ea;
+    --color-space-indigo-80: #c1c3d7;
+    --color-space-indigo-70: #a1a5c4;
+    --color-space-indigo-60: #8287b0;
+    --color-space-indigo-50: #636a9c;
+    --color-space-indigo-40: #4f547d;
+    --color-space-indigo-30: #3b3f5e;
+    --color-space-indigo-20: #282a3e;
+    --color-space-indigo-10: #15161e;
+    --color-space-indigo-8: #111118;
+    --color-space-indigo-6: #0c0d12;
+    --color-space-indigo-4: #08090c;
+    --color-space-indigo-2: #040406;
+    --color-space-indigo-0: #000000;
+
+    --color-neon-pink-100: #ffffff;
+    --color-neon-pink-98: #fef6f9;
+    --color-neon-pink-96: #fdecf4;
+    --color-neon-pink-94: #fde3ee;
+    --color-neon-pink-92: #fcd9e8;
+    --color-neon-pink-90: #fbd0e3;
+    --color-neon-pink-80: #ff99c5;
+    --color-neon-pink-70: #ff66a8;
+    --color-neon-pink-60: #ff338b;
+    --color-neon-pink-50: #ff006e;
+    --color-neon-pink-40: #cc0058;
+    --color-neon-pink-30: #990042;
+    --color-neon-pink-20: #66002c;
+    --color-neon-pink-10: #2f0417;
+    --color-neon-pink-8: #260312;
+    --color-neon-pink-6: #1c020e;
+    --color-neon-pink-4: #130209;
+    --color-neon-pink-2: #090105;
+    --color-neon-pink-0: #000000;
+
+    --color-amber-gold-100: #ffffff;
+    --color-amber-gold-98: #fefcf6;
+    --color-amber-gold-96: #fdf9ec;
+    --color-amber-gold-94: #fdf6e3;
+    --color-amber-gold-92: #fcf3d9;
+    --color-amber-gold-90: #fbf0d0;
+    --color-amber-gold-80: #ffe499;
+    --color-amber-gold-70: #ffd666;
+    --color-amber-gold-60: #ffc933;
+    --color-amber-gold-50: #ffbb00;
+    --color-amber-gold-40: #cc9600;
+    --color-amber-gold-30: #997000;
+    --color-amber-gold-20: #664b00;
+    --color-amber-gold-10: #2f2404;
+    --color-amber-gold-8: #261d03;
+    --color-amber-gold-6: #1c1502;
+    --color-amber-gold-4: #130e02;
+    --color-amber-gold-2: #090701;
+    --color-amber-gold-0: #000000;
+
+    --color-slime-lime-100: #ffffff;
+    --color-slime-lime-98: #fbfef6;
+    --color-slime-lime-96: #f7fdec;
+    --color-slime-lime-94: #f3fde3;
+    --color-slime-lime-92: #effcd9;
+    --color-slime-lime-90: #ebfbd0;
+    --color-slime-lime-80: #d8ff99;
+    --color-slime-lime-70: #c4ff66;
+    --color-slime-lime-60: #b1ff33;
+    --color-slime-lime-50: #9dff00;
+    --color-slime-lime-40: #7ecc00;
+    --color-slime-lime-30: #5e9900;
+    --color-slime-lime-20: #3f6600;
+    --color-slime-lime-10: #1f2f04;
+    --color-slime-lime-8: #182603;
+    --color-slime-lime-6: #121c02;
+    --color-slime-lime-4: #0c1302;
+    --color-slime-lime-2: #060901;
+    --color-slime-lime-0: #000000;
+
+    --color-azure-blue-100: #ffffff;
+    --color-azure-blue-98: #f6fafe;
+    --color-azure-blue-96: #edf4fd;
+    --color-azure-blue-94: #e4effc;
+    --color-azure-blue-92: #dbeafb;
+    --color-azure-blue-90: #d2e4f9;
+    --color-azure-blue-80: #9dc9fb;
+    --color-azure-blue-70: #6caef9;
+    --color-azure-blue-60: #3b93f7;
+    --color-azure-blue-50: #0a78f5;
+    --color-azure-blue-40: #0860c4;
+    --color-azure-blue-30: #064893;
+    --color-azure-blue-20: #043062;
+    --color-azure-blue-10: #06182d;
+    --color-azure-blue-8: #041324;
+    --color-azure-blue-6: #030f1b;
+    --color-azure-blue-4: #020a12;
+    --color-azure-blue-2: #010509;
+    --color-azure-blue-0: #000000;
+
+    /* space-indigo */
+    --color-space-indigo: var(--color-space-indigo-40);
+    --color-on-space-indigo: var(--color-space-indigo-100);
+    --color-shadow-space-indigo: var(--color-space-indigo-30);
+
+    /* neon-pink */
+    --color-neon-pink: var(--color-neon-pink-40);
+    --color-on-neon-pink: var(--color-neon-pink-100);
+    --color-shadow-neon-pink: var(--color-neon-pink-30);
+
+    /* amber-gold */
+    --color-amber-gold: var(--color-amber-gold-40);
+    --color-on-amber-gold: var(--color-amber-gold-100);
+    --color-shadow-amber-gold: var(--color-amber-gold-30);
+
+    /* slime-lime */
+    --color-slime-lime: var(--color-slime-lime-40);
+    --color-on-slime-lime: var(--color-slime-lime-100);
+    --color-shadow-slime-lime: var(--color-slime-lime-30);
+
+    /* azure-blue */
+    --color-azure-blue: var(--color-azure-blue-40);
+    --color-on-azure-blue: var(--color-azure-blue-100);
+    --color-shadow-azure-blue: var(--color-azure-blue-30);
+
+    /* surface */
+    --color-surface-container-lowest: var(--color-space-indigo-100);
+    --color-surface-container-low: var(--color-space-indigo-96);
+    --color-surface-container-neutral: var(--color-space-indigo-94);
+    --color-surface-container-high: var(--color-space-indigo-92);
+    --color-surface-container-highest: var(--color-space-indigo-90);
+
+    --color-on-surface: var(--color-space-indigo-10);
+    --color-on-surface-variant: var(--color-space-indigo-30);
+    --color-outline: var(--color-space-indigo-50);
+    --color-outline-variant: var(--color-space-indigo-80);
+
+    /* shadow */
+    --color-shadow-25: rgba(0, 0, 0, 0.25);
+
+    /*********************************************************************************************/
+    /* TYPOGRAPHY SYSTEM *************************************************************************/
+
+    --font-sans: "Sour Gummy", sans-serif;
+
+    /* Weights */
+    --font-weight-regular: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+
+    /* Mobile size */
+    --text-display-sm: 48px;
+    --text-display-sm--line-height: 56px;
+
+    --text-headline-sm: 32px;
+    --text-headline-sm--line-height: 40px;
+
+    --text-title-sm: 22px;
+    --text-title-sm--line-height: 28px;
+
+    /* Tablet Size */
+    --text-display-md: 56px;
+    --text-display-md--line-height: 64px;
+
+    --text-headline-md: 40px;
+    --text-headline-md--line-height: 48px;
+
+    --text-title-md: 24px;
+    --text-title-md--line-height: 28px;
+
+    /* Desktop size */
+    --text-display-lg: 64px;
+    --text-display-lg--line-height: 72px;
+
+    --text-headline-lg: 48px;
+    --text-headline-lg--line-height: 56px;
+
+    --text-title-lg: 28px;
+    --text-title-lg--line-height: 32px;
+
+    /* Body Size */
+    --text-body-xlarge: 20px;
+    --text-body-xlarge--line-height: 30px;
+
+    --text-body-large: 18px;
+    --text-body-large--line-height: 28px;
+
+    --text-body-medium: 16px;
+    --text-body-medium--line-height: 24px;
+
+    --text-body-small: 14px;
+    --text-body-small--line-height: 20px;
+
+    --text-body-xsmall: 12px;
+    --text-body-xsmall--line-height: 18px;
+
+    /**********************************************************************************************/
+    /* ELEVATION SYSTEM ***************************************************************************/
+
+    --shadow-2: 0px 2px 0px 0px var(--color-shadow-25);
+    --shadow-4: 0px 4px 0px 0px var(--color-shadow-25);
+    --shadow-8: 0px 8px 0px 0px var(--color-shadow-25);
+    --shadow-16: 0px 16px 0px 0px var(--color-shadow-25);
+    --shadow-24: 0px 24px 0px 0px var(--color-shadow-25);
+    --shadow-32: 0px 32px 0px 0px var(--color-shadow-25);
+    --shadow-64: 0px 64px 0px 0px var(--color-shadow-25);
+}
+
+@layer base {
+    .dark {
+        /*space-indigo*/
+        --color-space-indigo: var(--color-space-indigo-30);
+        --color-on-space-indigo: var(--color-space-indigo-100);
+        --color-shadow-space-indigo: var(--color-space-indigo-20);
+
+        /*neon-pink*/
+        --color-neon-pink: var(--color-neon-pink-30);
+        --color-on-neon-pink: var(--color-neon-pink-100);
+        --color-shadow-neon-pink: var(--color-neon-pink-20);
+
+        /*amber-gold*/
+        --color-amber-gold: var(--color-amber-gold-30);
+        --color-on-amber-gold: var(--color-amber-gold-100);
+        --color-shadow-amber-gold: var(--color-amber-gold-20);
+
+        /*slime-lime-100*/
+        --color-slime-lime: var(--color-slime-lime-30);
+        --color-on-slime-lime: var(--color-slime-lime-100);
+        --color-shadow-slime-lime: var(--color-slime-lime-20);
+
+        /*azure-blue-100*/
+        --color-azure-blue: var(--color-azure-blue-30);
+        --color-on-azure-blue: var(--color-azure-blue-100);
+        --color-shadow-azure-blue: var(--color-azure-blue-20);
+
+        /*surface*/
+        --color-surface-container-lowest: var(--color-space-indigo-6);
+        --color-surface-container-low: var(--color-space-indigo-10);
+        --color-surface-container-neutral: var(--color-space-indigo-20);
+        --color-surface-container-high: var(--color-space-indigo-30);
+        --color-surface-container-highest: var(--color-space-indigo-40);
+
+        --color-on-surface: var(--color-space-indigo-90);
+        --color-on-surface-variant: var(--color-space-indigo-80);
+        --color-outline: var(--color-space-indigo-60);
+        --color-outline-variant: var(--color-space-indigo-30);
+    }
+}
+
+@layer utilities {
+    .icon-filled {
+        font-variation-settings: "FILL" 1;
+    }
+    .icon-outline {
+        font-variation-settings: "FILL" 0;
+    }
+}
