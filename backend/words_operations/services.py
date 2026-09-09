@@ -1,6 +1,10 @@
+from django.utils import timezone
 import requests
 from rest_framework.response import Response
 from rest_framework import status
+import datetime
+
+from .models import WordClass
 
 def check_word(word):
     headers = {
@@ -15,13 +19,13 @@ def check_word(word):
             definitions = response.json().get('definitions', [])
         
             if definitions:
-                return Response({"result": True})
+                return True
             else:
                 
-                return Response({"result": False}, status=status.HTTP_404_NOT_FOUND)
+                return False
 
         elif response.status_code == 404:
-            return Response({"result": False}, status=status.HTTP_404_NOT_FOUND)
+            return False
 
         else:
             return Response(
@@ -30,4 +34,17 @@ def check_word(word):
                 )
     except requests.ConnectionError:
         return Response({"error": "Eroare cerere http"}, status=status.HTTP_502_BAD_GATEWAY)
-        
+
+def word_of_the_day():
+    start_date = datetime.date(2026, 9, 1)     
+    today = timezone.localdate()
+    days_passed = (today - start_date).days
+    total_words = WordClass.objects.count()   
+    if total_words == 0:
+        return None
+    
+    index = days_passed % total_words
+    word_of_the_day = WordClass.objects.order_by('id')[index]
+    definition = word_of_the_day.definition
+    
+    return {"word_of_the_day": word_of_the_day.word, "definition": definition }

@@ -4,8 +4,9 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import WordClass
 from .serializers import WordClassSerializer
-from .services import check_word
+from .services import check_word, word_of_the_day
 
+wod=word_of_the_day().get("word_of_the_day")
 class WordViewSet(viewsets.ModelViewSet):
     queryset = WordClass.objects.all()
     serializer_class = WordClassSerializer
@@ -13,14 +14,20 @@ class WordViewSet(viewsets.ModelViewSet):
     
 @api_view(['POST'])
 def game_logic(request):
-    word = request.data.get('word')
-    if word:
-        print(request)
+    word = request.data.get('word').upper().strip()
+    
+    if word and len(word) == 5:
         api_response = check_word(word)
-        return api_response
+        if api_response and word == wod:
+            return Response({"message": f"Ai ghicit cuvantul zilei! - {wod}"})
+        elif api_response:
+            return Response({"message": f"Nu ai ghicit cuvantul zilei dar e un cuvant existent - {wod}"})
+        else:
+            return Response({"message": "Nu exista acest cuvant"})
+                      
     else:
         return Response(
-            {"error": "Please provide a 'word' in the request body."}, 
+            {"error": "Please provide a 'word' in the request body that is 5 letters long"}, 
             status=status.HTTP_400_BAD_REQUEST
         )
      
