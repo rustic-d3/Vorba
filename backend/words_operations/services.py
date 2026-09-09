@@ -35,6 +35,28 @@ def check_word(word):
     except requests.ConnectionError:
         return Response({"error": "Eroare cerere http"}, status=status.HTTP_502_BAD_GATEWAY)
 
+def get_color_code(word, word_of_the_day):
+    result = ['r'] * len(word)
+    letter_counts = {}
+    for letter in word_of_the_day:
+        letter_counts[letter] = letter_counts.get(letter, 0) + 1
+
+    for i in range(len(word)):
+        if word[i] == word_of_the_day[i]:
+            result[i] = 'g'
+            letter_counts[word[i]] -= 1
+
+    for i in range(len(word)):
+        if result[i] == 'g':
+            continue
+        letter = word[i]
+        if letter_counts.get(letter, 0) > 0:
+            result[i] = 'y'
+            letter_counts[letter] -= 1
+
+    return ''.join(result)
+            
+
 def word_of_the_day():
     start_date = datetime.date(2026, 9, 1)     
     today = timezone.localdate()
