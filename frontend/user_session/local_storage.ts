@@ -10,3 +10,23 @@ export function useStorage(key: string) {
   }, [value, key]);
   return [value, setValue] as const;
 }
+
+export function validSession(inputDate: string | number | Date): boolean {
+  const dateToCheck = new Date(inputDate);
+  
+  if (isNaN(dateToCheck.getTime())) {
+    return false;
+  }
+
+  const options: Intl.DateTimeFormatOptions = { 
+    timeZone: 'Europe/Chisinau', 
+    year: 'numeric', 
+    month: 'numeric', 
+    day: 'numeric' 
+  };
+  
+  const todayInChisinau = new Date().toLocaleDateString('en-US', options);
+  const inputInChisinau = dateToCheck.toLocaleDateString('en-US', options);
+
+  return todayInChisinau === inputInChisinau;
+}
