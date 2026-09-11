@@ -1,6 +1,4 @@
-import { checkWord, getColorCode, wordOfTheDay } from './services.ts';
-
-
+import { checkWord, getColorCode, wordOfTheDay } from "./services.ts";
 
 interface ApiResponse {
   status?: number;
@@ -9,13 +7,38 @@ interface ApiResponse {
   color_code?: string;
 }
 export async function gameLogic(w: string): Promise<ApiResponse> {
+  //local storage data
+  const game_status = window.localStorage.getItem("game_status");
+  const guess_list = window.localStorage.getItem("guess_list");
+  const row_index = window.localStorage.getItem("row_index") || "0";
+  // general word logic
+
   const word: string = w.toLowerCase().trim();
+  if (game_status == "lose") {
+    return { message: "Ai pierdut!" };
+  } else if (game_status == "win") {
+    return { message: "Ai câștigat!" };
+  }
 
   if (word && word.length === 5) {
     const apiResponse = checkWord(word);
 
     if (apiResponse) {
-      const colorCode = getColorCode(word, wordOfTheDay); // vezi observația de mai jos
+      let wordsList = guess_list ? JSON.parse(guess_list) : [];
+      wordsList.push(word);
+      window.localStorage.setItem("guess_list", JSON.stringify(wordsList));
+      const colorCode = getColorCode(word, wordOfTheDay);
+      if (colorCode == "ggggg") {
+        window.localStorage.setItem("game_status", "win");
+        return { message: "Felicitări! Ai câștigat!" };
+      }
+      const new_row_index = parseInt(row_index) + 1;
+      window.localStorage.setItem("row_index", new_row_index.toString());
+      if (new_row_index == 6) {
+        window.localStorage.setItem("game_status", "lose");
+        return { message: "Ai pierdut!" };
+      }
+
       return { color_code: colorCode };
     } else {
       return { message: "Nu exista acest cuvant" };
