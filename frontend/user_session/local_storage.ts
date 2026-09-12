@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import axiosInstance from '../api/axiosInstance.ts';
 
 export function useStorage(key: string) {
   const [value, setValue] = useState(() => {
@@ -10,7 +11,7 @@ export function useStorage(key: string) {
   }, [value, key]);
   return [value, setValue] as const;
 }
-
+// Verifies if the session after you START the game is valid
 export function validSession(inputDate: string | number | Date): boolean {
   const dateToCheck = new Date(inputDate);
 
@@ -57,4 +58,16 @@ export function initialiseSession() {
     setCurrentRowIndex,
     setGuessList,
   ]);
+}
+// Verifies if the session after you FINISH the game is valid and not corrupted by the player
+export async function validateSession(){
+  const data = {
+    "current_date": window.localStorage.getItem("current_date"),
+    "game_status": window.localStorage.getItem("game_status"),
+    "guess_list": window.localStorage.getItem("guess_list"),
+    "row_index": window.localStorage.getItem("row_index"),
+    "session_id": window.localStorage.getItem("session_id"),
+  }
+  // const response = await axiosInstance("/")
+
 }

@@ -30,6 +30,7 @@ export async function gameLogic(w: string): Promise<ApiResponse> {
       const colorCode = getColorCode(word, wordOfTheDay);
       if (colorCode == "ggggg") {
         window.localStorage.setItem("game_status", "win");
+        
         return { message: "Felicitări! Ai câștigat!" };
       }
       const new_row_index = parseInt(row_index) + 1;
