@@ -68,6 +68,8 @@ export async function validateSession(){
     "row_index": window.localStorage.getItem("row_index"),
     "session_id": window.localStorage.getItem("session_id"),
   }
-  // const response = await axiosInstance("/")
+  const response = await axiosInstance.post("/session/validate-session/", data)
+  const response_data = response.data
+  console.log(response_data)
 
 }

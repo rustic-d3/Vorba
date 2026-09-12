@@ -1,5 +1,6 @@
+import { validSession } from "../user_session/local_storage.ts";
 import { checkWord, getColorCode, wordOfTheDay } from "./services.ts";
-
+import { validateSession } from "../user_session/local_storage.ts";
 interface ApiResponse {
   status?: number;
   message?: string;
@@ -28,9 +29,16 @@ export async function gameLogic(w: string): Promise<ApiResponse> {
       wordsList.push(word);
       window.localStorage.setItem("guess_list", JSON.stringify(wordsList));
       const colorCode = getColorCode(word, wordOfTheDay);
+      //Guessing the word case
       if (colorCode == "ggggg") {
         window.localStorage.setItem("game_status", "win");
-        
+        const new_row_index = parseInt(row_index) + 1;
+        window.localStorage.setItem("row_index", new_row_index.toString());
+        if (new_row_index == 6) {
+          window.localStorage.setItem("game_status", "win");
+          return { message: "Felicitări! Ai câștigat!" };
+        }
+        validateSession();
         return { message: "Felicitări! Ai câștigat!" };
       }
       const new_row_index = parseInt(row_index) + 1;

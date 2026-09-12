@@ -5,7 +5,7 @@ const words = new Set(validWords)
 import axiosInstance from '../api/axiosInstance.ts';
 
 export async function getWordOfTheDay(): Promise<string> {
-  const { data } = await axiosInstance.get('/words-operations/get-wod/');
+  const { data } = await axiosInstance.get('/words-operations/words/get-wod/');
   return data.word_of_the_day.toLowerCase();
 }
 
