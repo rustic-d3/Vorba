@@ -16,8 +16,10 @@ export async function gameLogic(w: string): Promise<ApiResponse> {
 
   const word: string = w.toLowerCase().trim();
   if (game_status == "lose") {
+    validateSession();
     return { message: "Ai pierdut!" };
   } else if (game_status == "win") {
+    validateSession();
     return { message: "Ai câștigat!" };
   }
 
@@ -34,17 +36,17 @@ export async function gameLogic(w: string): Promise<ApiResponse> {
         window.localStorage.setItem("game_status", "win");
         const new_row_index = parseInt(row_index) + 1;
         window.localStorage.setItem("row_index", new_row_index.toString());
-        if (new_row_index == 6) {
+        if (new_row_index <= 6) {
           window.localStorage.setItem("game_status", "win");
+          validateSession();
           return { message: "Felicitări! Ai câștigat!" };
         }
-        validateSession();
-        return { message: "Felicitări! Ai câștigat!" };
       }
       const new_row_index = parseInt(row_index) + 1;
       window.localStorage.setItem("row_index", new_row_index.toString());
-      if (new_row_index == 6) {
+      if (new_row_index >= 6) {
         window.localStorage.setItem("game_status", "lose");
+        validateSession();
         return { message: "Ai pierdut!" };
       }
 

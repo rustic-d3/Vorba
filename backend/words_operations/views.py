@@ -26,7 +26,8 @@ class WordViewSet(viewsets.ModelViewSet):
         index = days_passed % total_words
         word_of_the_day = WordClass.objects.order_by('id')[index]
         definition = word_of_the_day.definition
-            
+        with open("user_session/word_of_the_day.txt", "w") as f:
+            f.write(f"{word_of_the_day.word}")    
         return Response({"word_of_the_day": word_of_the_day.word, "definition": definition })
     
       
