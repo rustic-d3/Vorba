@@ -1,75 +1,129 @@
-import { useState, useEffect } from "react";
-import axiosInstance from '../api/axiosInstance.ts';
+import { useState, useEffect, useRef, useCallback } from "react";
+import axios from "axios";
+import axiosInstance from "../api/axiosInstance.ts";
 
-export function useStorage(key: string) {
-  const [value, setValue] = useState(() => {
-    const savedValue = localStorage.getItem(key);
-    return savedValue || "";
-  });
-  useEffect(() => {
-    localStorage.setItem(key, value);
-  }, [value, key]);
-  return [value, setValue] as const;
+const TIME_ZONE = "Europe/Chisinau";
+const KEYS = {
+  sessionId: "session_id",
+  sessionDate: "current_date",
+  gameStatus: "game_status",
+  rowIndex: "row_index",
+  guessList: "guess_list",
+} as const;
+
+export type GameStatus = "in_progress" | "win" | "lose";
+
+export function todayInGameTimezone(): string {
+  return new Date().toLocaleDateString("en-CA", { timeZone: TIME_ZONE });
 }
-// Verifies if the session after you START the game is valid
-export function validSession(inputDate: string | number | Date): boolean {
-  const dateToCheck = new Date(inputDate);
 
-  if (isNaN(dateToCheck.getTime())) {
-    return false;
+function readStorage<T>(key: string, fallback: T): T {
+  try {
+    const saved = localStorage.getItem(key);
+    return saved !== null ? (JSON.parse(saved) as T) : fallback;
+  } catch {
+    return fallback; 
   }
-
-  const options: Intl.DateTimeFormatOptions = {
-    timeZone: "Europe/Chisinau",
-    year: "numeric",
-    month: "numeric",
-    day: "numeric",
-  };
-
-  const todayInChisinau = new Date().toLocaleDateString("en-US", options);
-  const inputInChisinau = dateToCheck.toLocaleDateString("en-US", options);
-
-  return todayInChisinau === inputInChisinau;
 }
 
-export function initialiseSession() {
-  const [sessionId, setSessionId] = useStorage("session_id");
-  const [sessionDate, setSessionDate] = useStorage("current_date");
-  const [gameStatus, setGameStatus] = useStorage("game_status");
-  const [currentRowIndex, setCurrentRowIndex] = useStorage("row_index");
-  const [guessList, setGuessList] = useStorage("guess_list");
+function writeStorage(key: string, value: unknown) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+  }
+}
+
+export function useStorage<T>(key: string, initialValue: T) {
+  const [value, setValue] = useState<T>(() => readStorage(key, initialValue));
+  const valueRef = useRef(value);
+
+  const set = useCallback(
+    (next: T | ((prev: T) => T)) => {
+      const resolved =
+        typeof next === "function" ? (next as (prev: T) => T)(valueRef.current) : next;
+      valueRef.current = resolved;
+      writeStorage(key, resolved);
+      setValue(resolved);
+    },
+    [key]
+  );
+
+  return [value, set] as const;
+}
+
+export function useGameSession() {
+  const [sessionId, setSessionId] = useStorage<string>(KEYS.sessionId, "");
+  const [sessionDate, setSessionDate] = useStorage<string>(KEYS.sessionDate, "");
+  const [gameStatus, setGameStatus] = useStorage<GameStatus>(KEYS.gameStatus, "in_progress");
+  const [rowIndex, setRowIndex] = useStorage<number>(KEYS.rowIndex, 0);
+  const [guessList, setGuessList] = useStorage<string[]>(KEYS.guessList, []);
+  const requestedSession = useRef(false);
 
   useEffect(() => {
-    const myDate = new Date();
-
-    if (!sessionId || !validSession(sessionDate)) {
-      const randomStr = window.crypto.randomUUID();
-      setSessionId(randomStr);
-      setSessionDate(myDate.toISOString());
+    
+    if (sessionDate !== todayInGameTimezone()) {
+      setSessionId("");
+      setSessionDate(todayInGameTimezone());
       setGameStatus("in_progress");
-      setCurrentRowIndex("0");
-      setGuessList("[]");
+      setRowIndex(0);
+      setGuessList([]);
+      return;
+    }
+
+    if (!sessionId && !requestedSession.current) {
+      requestedSession.current = true;
+      axiosInstance
+        .get("/session/get-session/")
+        .then(({ data }) => setSessionId(data.code))
+        .catch(() => {
+          requestedSession.current = false; 
+        });
     }
   }, [
     sessionId,
+    sessionDate,
     setSessionId,
     setSessionDate,
     setGameStatus,
-    setCurrentRowIndex,
+    setRowIndex,
     setGuessList,
   ]);
-}
-// Verifies if the session after you FINISH the game is valid and not corrupted by the player
-export async function validateSession(){
-  const data = {
-    "current_date": window.localStorage.getItem("current_date"),
-    "game_status": window.localStorage.getItem("game_status"),
-    "guess_list": window.localStorage.getItem("guess_list"),
-    "row_index": window.localStorage.getItem("row_index"),
-    "session_id": window.localStorage.getItem("session_id"),
-  }
-  const response = await axiosInstance.post("/session/validate-session/", data)
-  const response_data = response.data
-  console.log(response_data)
 
+  return {
+    sessionId,
+    sessionDate,
+    gameStatus,
+    rowIndex,
+    guessList,
+    setGameStatus,
+    setRowIndex,
+    setGuessList,
+  };
+}
+
+export type ValidationResult =
+  | { ok: true; data: unknown }
+  | { ok: false; status?: number; message: string };
+
+export async function validateSession(): Promise<ValidationResult> {
+  try {
+    const response = await axiosInstance.post("/session/validate-session/", {
+      session_id: readStorage<string>(KEYS.sessionId, ""),
+      current_date: readStorage<string>(KEYS.sessionDate, ""),
+      game_status: readStorage<GameStatus>(KEYS.gameStatus, "in_progress"),
+      row_index: readStorage<number>(KEYS.rowIndex, 0),
+      guess_list: readStorage<string[]>(KEYS.guessList, []),
+    });
+    
+    return { ok: true, data: response.data.statistic };
+  } catch (err) {
+    if (axios.isAxiosError(err)) {
+      return {
+        ok: false,
+        status: err.response?.status,
+        message: err.response?.data?.message ?? "Request failed",
+      };
+    }
+    return { ok: false, message: "Unexpected error" };
+  }
 }

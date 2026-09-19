@@ -94,7 +94,7 @@ class SessionViewSet(viewsets.ModelViewSet):
         session_data.save()
 
         statistics = calculate_statistics(session_data)
-        return Response({"message": "Session validated", "data": statistics},
+        return Response({"message": "Session validated", "statistic": statistics},
                         status=status.HTTP_200_OK)
 
     @action(detail=False, methods=["get"], url_path="get-session")

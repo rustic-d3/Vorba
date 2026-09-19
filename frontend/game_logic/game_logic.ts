@@ -1,4 +1,3 @@
-import { validSession } from "../user_session/local_storage.ts";
 import { checkWord, getColorCode, wordOfTheDay } from "./services.ts";
 import { validateSession } from "../user_session/local_storage.ts";
 interface ApiResponse {
@@ -6,6 +5,7 @@ interface ApiResponse {
   message?: string;
   error?: string;
   color_code?: string;
+  statistics?: any;
 }
 export async function gameLogic(w: string): Promise<ApiResponse> {
   //local storage data
@@ -16,11 +16,11 @@ export async function gameLogic(w: string): Promise<ApiResponse> {
 
   const word: string = w.toLowerCase().trim();
   if (game_status == "lose") {
-    validateSession();
-    return { message: "Ai pierdut!" };
+    const statistics_data = await validateSession();
+    return { message: "Ai pierdut!", statistics: statistics_data };
   } else if (game_status == "win") {
-    validateSession();
-    return { message: "Ai câștigat!" };
+    const statistics_data = await validateSession();
+    return { message: "Ai câștigat!", statistics: statistics_data };
   }
 
   if (word && word.length === 5) {
@@ -33,21 +33,22 @@ export async function gameLogic(w: string): Promise<ApiResponse> {
       const colorCode = getColorCode(word, wordOfTheDay);
       //Guessing the word case
       if (colorCode == "ggggg") {
-        window.localStorage.setItem("game_status", "win");
+        window.localStorage.setItem("game_status", JSON.stringify("win"));
         const new_row_index = parseInt(row_index) + 1;
         window.localStorage.setItem("row_index", new_row_index.toString());
         if (new_row_index <= 6) {
-          window.localStorage.setItem("game_status", "win");
-          validateSession();
-          return { message: "Felicitări! Ai câștigat!" };
+          window.localStorage.setItem("game_status", JSON.stringify("win"));
+          const statistics_data = await validateSession();
+          return { message: "Felicitări! Ai câștigat!", statistics: statistics_data };
         }
       }
       const new_row_index = parseInt(row_index) + 1;
       window.localStorage.setItem("row_index", new_row_index.toString());
       if (new_row_index >= 6) {
-        window.localStorage.setItem("game_status", "lose");
-        validateSession();
-        return { message: "Ai pierdut!" };
+        window.localStorage.setItem("game_status", JSON.stringify("lose"));
+        const statistics_data = await validateSession();
+        
+        return { message: "Ai pierdut!", statistics: statistics_data };
       }
 
       return { color_code: colorCode };

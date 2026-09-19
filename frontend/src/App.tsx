@@ -1,12 +1,12 @@
 import "./App.css";
 import "../user_session/local_storage"
-import { initialiseSession } from "../user_session/local_storage";
+import { useGameSession } from "../user_session/local_storage";
 import "../game_logic/game_logic"
 import { gameLogic } from "../game_logic/game_logic";
 import { useState } from "react";
 
 function App() {
-  initialiseSession();
+  useGameSession();
   function sendWord(word:string){
     gameLogic(word).then(result => console.log("RESULT:", result));
   }
