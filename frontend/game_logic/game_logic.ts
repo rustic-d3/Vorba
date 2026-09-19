@@ -1,4 +1,4 @@
-import { checkWord, getColorCode, wordOfTheDay } from "./services.ts";
+import { checkWord, definition, getColorCode, wordOfTheDay } from "./services.ts";
 import { validateSession } from "../user_session/local_storage.ts";
 interface ApiResponse {
   status?: number;
@@ -6,6 +6,9 @@ interface ApiResponse {
   error?: string;
   color_code?: string;
   statistics?: any;
+  word_of_the_day?: string;
+  word_definition?: string;
+
 }
 export async function gameLogic(w: string): Promise<ApiResponse> {
   //local storage data
@@ -17,10 +20,10 @@ export async function gameLogic(w: string): Promise<ApiResponse> {
   const word: string = w.toLowerCase().trim();
   if (game_status == "lose") {
     const statistics_data = await validateSession();
-    return { message: "Ai pierdut!", statistics: statistics_data };
+    return { message: "Ai pierdut!", statistics: statistics_data, word_of_the_day: wordOfTheDay, word_definition: definition };
   } else if (game_status == "win") {
     const statistics_data = await validateSession();
-    return { message: "Ai câștigat!", statistics: statistics_data };
+    return { message: "Ai câștigat!", statistics: statistics_data, word_of_the_day: wordOfTheDay, word_definition: definition };
   }
 
   if (word && word.length === 5) {
@@ -39,7 +42,7 @@ export async function gameLogic(w: string): Promise<ApiResponse> {
         if (new_row_index <= 6) {
           window.localStorage.setItem("game_status", JSON.stringify("win"));
           const statistics_data = await validateSession();
-          return { message: "Felicitări! Ai câștigat!", statistics: statistics_data };
+          return { message: "Felicitări! Ai câștigat!", statistics: statistics_data, word_of_the_day: wordOfTheDay, word_definition: definition };
         }
       }
       const new_row_index = parseInt(row_index) + 1;
@@ -48,7 +51,7 @@ export async function gameLogic(w: string): Promise<ApiResponse> {
         window.localStorage.setItem("game_status", JSON.stringify("lose"));
         const statistics_data = await validateSession();
         
-        return { message: "Ai pierdut!", statistics: statistics_data };
+        return { message: "Ai pierdut!", statistics: statistics_data, word_of_the_day: wordOfTheDay, word_definition: definition };
       }
 
       return { color_code: colorCode };

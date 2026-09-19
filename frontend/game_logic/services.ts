@@ -4,21 +4,20 @@ const words = new Set(validWords)
 
 import axiosInstance from '../api/axiosInstance.ts';
 
-export async function getWordOfTheDay(): Promise<string> {
+export async function getWordOfTheDay() {
   const { data } = await axiosInstance.get('/words-operations/words/get-wod/');
-  return data.word_of_the_day.toLowerCase();
+  return [ data.word_of_the_day.toLowerCase(), data.definition];
 }
 
-let wordOfTheDay: string;
+export let wordOfTheDay = "";
+export let definition = "";
 
 try {
-  wordOfTheDay = await getWordOfTheDay();
+  [wordOfTheDay, definition] = await getWordOfTheDay();
 } catch (err) {
   console.error('Nu am putut încărca cuvântul zilei:', err);
   wordOfTheDay = '';
 }
-
-export { wordOfTheDay };
 
 export function checkWord(word: string): boolean {
   return words.has(word);
