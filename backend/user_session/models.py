@@ -14,8 +14,8 @@ validation_values = [
 
 class SessionClass(models.Model):
     session_id = models.CharField(max_length=255, primary_key=True)
-    row_index = models.IntegerField()
-    game_status = models.CharField(choices=game_stats)
-    current_date = models.DateTimeField()
+    row_index = models.IntegerField(null=True)
+    game_status = models.CharField(choices=game_stats, null=True)
+    current_date = models.DateTimeField(null=True)
     state = models.CharField(choices=validation_values,null=True)
     
